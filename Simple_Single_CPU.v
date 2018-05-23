@@ -169,6 +169,8 @@ MUX_2to1 #(.size(32)) Memto_Reg_source(
 			);
 			
 JumpAddre_toMemAddre J_to_PC(
+			.jr_i(ifjr),
+			.jr_addr_i(ALU_result),
 			.pcP4_i(Add1_sum),
 			.JumpAddre_i(instr[26-1:0]),
 			.pc_MemAddre_o(pc_ifJump)
@@ -214,9 +216,10 @@ MUX_2to1 #(.size(1)) Mux_Jump_Jr(
 always @(clk_i) begin
 	//$display("RegWriteData is %d, RegWriteData1 is %d", RegWriteData, RegWriteData1);
 	//$display("RSaddr is %d ,RTaddr is %d", instr[25:21],instr[20:16]);
-	//$display("ALU_result is %d ,RTdata is %d", ALU_result,RTdata);
+	$display("ALU_result is %d ,RTdata is %d", ALU_result,RTdata);
+	$display("ifjr is %d ,jump1 is %d,pc_ifJump is %d", ifjr,jump1,pc_ifJump);
 	$display("pc_out is %d, Branchzero is %d", pc_out, Branchzero);
-	$display("%b", instr);
+	//$display("%b", instr);
 end
 
 endmodule
