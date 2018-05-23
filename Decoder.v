@@ -162,7 +162,7 @@ always @( * ) begin
 		end
     35: //load word
         begin
-        ALU_op_o <= 3'b010;
+        ALU_op_o <= 3'b101;
         ALUSrc_o <= 1'b1;
         RegWrite_o <= 1'b1;
         RegDst_o <= 1'b0;
@@ -174,7 +174,7 @@ always @( * ) begin
         end
     43: //save word
         begin
-        ALU_op_o <= 3'b010;
+        ALU_op_o <= 3'b101;
         ALUSrc_o <= 1'b1;
         RegWrite_o <= 1'b0;
         RegDst_o <= 1'b0;
