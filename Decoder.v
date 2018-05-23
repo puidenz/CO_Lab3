@@ -70,7 +70,7 @@ always @( * ) begin
 		end
 	1: //bltz
 	   begin
-        ALU_op_o <= 3'b010;
+        ALU_op_o <= 3'b001;
         ALUSrc_o <= 1'b0;
         RegWrite_o <= 1'b0;
         RegDst_o <= 1'b0;
@@ -122,7 +122,7 @@ always @( * ) begin
 		end
 	5: // Bne & Bnez
 		begin
-		ALU_op_o <= 3'b111;
+		ALU_op_o <= 3'b110;
 		ALUSrc_o <= 1'b0;
 		RegWrite_o <= 1'b0;
 		RegDst_o <= 1'b0; //X
@@ -135,7 +135,7 @@ always @( * ) begin
 		end
 	6: //ble
 	   begin
-            ALU_op_o <= 3'b010;
+            ALU_op_o <= 3'b001;
             ALUSrc_o <= 1'b0;
             RegWrite_o <= 1'b0;
             RegDst_o <= 1'b0; //X

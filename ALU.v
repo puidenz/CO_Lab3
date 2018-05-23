@@ -38,7 +38,7 @@ module ALU(
      
 //I/O ports
 input  [32-1:0]  src1_i;
-input  [32-1:0]	 src2_i;
+input  [32-1:0]  src2_i;
 input  [4-1:0]   ctrl_i;
 input	 [5-1:0]		shift_i;
 
@@ -67,9 +67,9 @@ always @(*)begin
 		  `MUL:	 result_o <= src1_i * src2_i;
         `AND:   result_o <= src1_i & src2_i;
         `OR:    result_o <= src1_i | src2_i;
-        `SLT:   result_o <= (src1_i<src2_i) ? 1 : 0;
-        `BEQ:	 result_o <= (src1_i - src2_i); // ? 1'b1 : 1'b0;
-        `BNE:	 result_o <= (src1_i - src2_i);
+        `SLT:   result_o <= (ssrc1_i<ssrc2_i) ? 1 : 0;
+        //`BEQ:	 result_o <= (src1_i - src2_i); // ? 1'b1 : 1'b0;
+        //`BNE:	 result_o <= (src1_i - src2_i);
 		  `SRA:   result_o <= ssrc2_i>>>sshift_i;
         `SR: result_o <= ssrc2_i >>> ssrc1_i;
         `SUP: result_o <= src2_i << 16;
