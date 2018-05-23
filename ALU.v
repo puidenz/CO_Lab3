@@ -24,6 +24,8 @@
 `define SR 4'b0100
 `define SUP 4'b0111
 
+`define MUL 4'b1110
+
 
 module ALU(
     src1_i,
@@ -47,6 +49,7 @@ output           zero_o;
 reg    [32-1:0]  result_o;
 reg              zero_o;
 reg              bne;
+reg    [32-1:0]  Minus_result;
 
 //Parameter
 wire	signed [32-1:0] ssrc1_i;
@@ -61,6 +64,7 @@ always @(*)begin
     case(ctrl_i)
         `ADD:   result_o <= src1_i + src2_i;
         `SUB:   result_o <= src1_i - src2_i;
+		  `MUL:	 result_o <= src1_i * src2_i;
         `AND:   result_o <= src1_i & src2_i;
         `OR:    result_o <= src1_i | src2_i;
         `SLT:   result_o <= (src1_i<src2_i) ? 1 : 0;
@@ -71,17 +75,9 @@ always @(*)begin
         `SUP: result_o <= src2_i << 16;
         default: result_o <= 0;
     endcase
-	 if(ctrl_i == `BEQ)
-		 begin
-		 zero_o <= (result_o == 0) ? 1'b1 : 1'b0;
-		 end
-	 else
-		 begin
-		 zero_o <= (result_o == 0) ? 1'b0 : 1'b1;
-		 end
-
-	 end
-	 
+     Minus_result <= src1_i - src2_i;
+     zero_o <= (Minus_result == 0) ? 1'b1 : 1'b0;
+end
 endmodule
 
 
