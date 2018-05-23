@@ -59,6 +59,7 @@ always @( posedge rst_i or posedge clk_i  ) begin
 		else 
 		    Reg_File[RDaddr_i] <= Reg_File[RDaddr_i];
 	end
+	$display("RDaddr is %d", RDaddr_i);
 end
 
 endmodule     
