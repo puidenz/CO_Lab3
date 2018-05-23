@@ -35,7 +35,7 @@ wire    [32-1:0]    RTdata;
 wire    [4-1:0]     ALUCtrl;
 wire    [32-1:0]    SignData;
 wire    [32-1:0]    Mux2_data;
-wire    [5-1:0]    Mux3_data;
+wire    [5-1:0]     Mux3_data;
 wire                Zero;
 wire    [32-1:0]    Add2_sum;
 wire    [32-1:0]    Shift_data;
@@ -50,6 +50,8 @@ wire    [32-1:0]    RegWriteData1;
 wire	  [32-1:0]	  pc_ifJump;
 wire	  [32-1:0]	  pc_ifBranch;
 wire					  jump;
+wire					  jump1;
+wire					  ifjr;
 //Greate componentes
 ProgramCounter PC(
        .clk_i(clk_i),      
@@ -104,7 +106,8 @@ Decoder Decoder(
 ALU_Ctrl AC(
         .funct_i(instr[5:0]),   
         .ALUOp_i(ALUOp),   
-        .ALUCtrl_o(ALUCtrl) 
+        .ALUCtrl_o(ALUCtrl),
+        .jr_o(ifjr)
         );
 	
 Sign_Extend SE(
@@ -174,7 +177,7 @@ JumpAddre_toMemAddre J_to_PC(
 MUX_2to1 #(.size(32)) Jump_or_otherPC(
 			.data0_i(pc_ifBranch),
 			.data1_i(pc_ifJump),
-			.select_i(jump),
+			.select_i(jump1),
 			.data_o(pc_in)
 			);
 			// handling jr & nop Regwrite might be error
@@ -191,23 +194,29 @@ MUX_2to1 #(.size(32)) Mux_Write_Data(
 			.select_i(instr[31:26]==6'b000011),
 			.data_o(RegWriteData1)
 			);
-MUX_2to1 #(.size(32)) Mux_Write_Des(
+MUX_2to1 #(.size(5)) Mux_Write_Des(
 			.data0_i(Mux1_data), //RDaddr
 			.data1_i(5'b11111),
 			.select_i(instr[31:26]==6'b000011),
 			.data_o(Mux3_data)
 			);
+			//MUX for jr 
+MUX_2to1 #(.size(1)) Mux_Jump_Jr(
+			.data0_i(jump), //RDaddr
+			.data1_i(1'b1),
+			.select_i(ifjr),
+			.data_o(jump1)	
+			);
 /*always @(clk_i) begin
     $display("%b ==> %d <=> %d ",RegWrite,Mux1_data,ALU_result);
-end*/
+*/
 
 always @(clk_i) begin
-	$display("RegWriteData is %d, RegWriteData1 is %d", RegWriteData, RegWriteData1);
-end
-
-always @(clk_i) begin
-	$display("RSaddr is %d ,RTaddr is %d", instr[25:21],instr[20:16]);
-	$display("ALU_result is %d ,RTdata is %d", ALU_result,RTdata);
+	//$display("RegWriteData is %d, RegWriteData1 is %d", RegWriteData, RegWriteData1);
+	//$display("RSaddr is %d ,RTaddr is %d", instr[25:21],instr[20:16]);
+	//$display("ALU_result is %d ,RTdata is %d", ALU_result,RTdata);
+	$display("pc_out is %d, Branchzero is %d", pc_out, Branchzero);
+	$display("%b", instr);
 end
 
 endmodule

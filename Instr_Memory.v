@@ -39,7 +39,9 @@ initial begin
 	    instruction_file[i] = 32'b0;
     $readmemb("CO_P3_test_data2.txt", instruction_file);  //Read instruction from "CO_P3_test_data.txt"   
 		
+	//$display(instruction_file);
 end
+
 
 assign	instr_o = instruction_file[addr_i/4];
 
