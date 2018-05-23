@@ -19,17 +19,28 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module JumpAddre_toMemAddre(
+		jr_i,
+		jr_addr_i,
 		pcP4_i,
 		JumpAddre_i,
 		pc_MemAddre_o
     );
-
+input				jr_i;
+input 	[32-1:0]	jr_addr_i;
 input 	[32-1:0]	pcP4_i;
 input 	[26-1:0]	JumpAddre_i;
 output 	[32-1:0]	pc_MemAddre_o;
 
-assign pc_MemAddre_o[31:28] = pcP4_i[31:28];
-assign pc_MemAddre_o[27:2] = JumpAddre_i[26-1:0];
-assign pc_MemAddre_o[1:0] = 2'b00;
+reg [32-1:0] pc_MemAddre_o;
+
+always @(*) begin
+	if (jr_i) 
+		pc_MemAddre_o = jr_addr_i ;	
+	else begin
+		pc_MemAddre_o[31:28] = pcP4_i[31:28];
+		pc_MemAddre_o[27:2] = JumpAddre_i[26-1:0];
+		pc_MemAddre_o[1:0] = 2'b00;
+	end
+end
 
 endmodule

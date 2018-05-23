@@ -46,7 +46,7 @@ always @(*) begin
                     6'b101010: ALUCtrl_o <= 4'b0110;
                     6'b000011: ALUCtrl_o <= 4'b1111; //X
                     6'b000111: ALUCtrl_o <= 4'b0100;
-                    6'b100001: begin
+                    6'b001000: begin
                         ALUCtrl_o <= 4'b0010; // jr
                         jr_o <= 1'b1;
                     end
