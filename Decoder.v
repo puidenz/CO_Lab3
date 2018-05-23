@@ -80,7 +80,7 @@ always @( * ) begin
 	   begin
 	   ALU_op_o <= 3'b000;
        ALUSrc_o <= 1'b0;
-       RegWrite_o <= 1'b0;
+       RegWrite_o <= 1'b1;
        RegDst_o <= 1'b0;
        Branch_o <= 1'b0;
        Memto_Reg_o <= 1'b0;

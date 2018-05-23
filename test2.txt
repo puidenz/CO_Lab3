@@ -1,17 +1,17 @@
-addu r0,r0,r0
-addi a0,zero,4		<-f(4),§ïÅÜr4ªº­È¥Nªí f(r4)¡A­Y³]¤Ó¤j¥i¯à­n§âdata memory³]¤j¤@¨Ç
+ï»¿addu r0,r0,r0
+addi a0,zero,4		<-f(4),æ”¹è®Šr4çš„å€¼ä»£è¡¨ f(r4)ï¼Œè‹¥è¨­å¤ªå¤§å¯èƒ½è¦æŠŠdata memoryè¨­å¤§ä¸€äº›
 addi t1,zero,1
-jal fib			<-JAL:·ífib functionµ²§ô«áPC·|¸õ¨ìj final
+jal fib			<-JAL:ç•¶fib functionçµæŸå¾ŒPCæœƒè·³åˆ°j final
 j final
 
 fib:
 addi sp,sp,-12		//stack point -12
-sw ra,0(sp)		//¥H¤U¤T¹Dsw±Nreg¦s¤Jmemory¤¤
+sw ra,0(sp)		//ä»¥ä¸‹ä¸‰é“swå°‡regå­˜å…¥memoryä¸­
 sw s0,4(sp)
 sw s1,8(sp)
 addu s0,a0,zero
-beq s0,zero,re1		//§PÂ_¬O§_f(0)	
-beq s0,t1,re1		//§PÂ_¬O§_f(1)
+beq s0,zero,re1		//åˆ¤æ–·æ˜¯å¦f(0)	
+beq s0,t1,re1		//åˆ¤æ–·æ˜¯å¦f(1)
 addi a0,s0,-1
 jal fib
 addu s1,zero,v0
@@ -24,7 +24,7 @@ lw ra,0(sp)
 lw s0,4(sp)
 lw s1,8(sp)
 addi sp,sp,12
-jr ra			//function callµ²§ô
+jr ra			//function callçµæŸ
 
 re1:
 addi v0,zero,1
@@ -39,4 +39,4 @@ nop
 
 
 ------
-run§¹r2=5
+runå®Œr2=5

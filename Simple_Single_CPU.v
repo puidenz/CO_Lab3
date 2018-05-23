@@ -22,18 +22,20 @@ wire    [3-1:0]     ALUOp;
 wire                ALUSrc;
 wire                RegDst;
 wire                RegWrite;
+wire                RegWrite1;
 wire                branch;
 wire    [32-1:0]    pc_in;
 wire    [32-1:0]    pc_out;
 wire    [32-1:0]    Add1_sum;
 wire    [32-1:0]    instr;
 wire    [5-1:0]     Mux1_data;
-wire    [32-1:0]    RDdata;
+wire    [32-1:0]    ALU_result;
 wire    [32-1:0]    RSdata;
 wire    [32-1:0]    RTdata;
 wire    [4-1:0]     ALUCtrl;
 wire    [32-1:0]    SignData;
 wire    [32-1:0]    Mux2_data;
+wire    [5-1:0]    Mux3_data;
 wire                Zero;
 wire    [32-1:0]    Add2_sum;
 wire    [32-1:0]    Shift_data;
@@ -43,6 +45,7 @@ wire                MemWrite;
 wire                Memto_Reg;
 wire    [32-1:0]    MemData;
 wire    [32-1:0]    RegWriteData;
+wire    [32-1:0]    RegWriteData1;
 
 wire	  [32-1:0]	  pc_ifJump;
 wire	  [32-1:0]	  pc_ifBranch;
@@ -56,7 +59,7 @@ ProgramCounter PC(
 	    );
 	
 Adder Adder1(
-        .src1_i(pc_out),     
+       .src1_i(pc_out),     
 	    .src2_i(32'd4),     
 	    .sum_o(Add1_sum)    
 	    );
@@ -78,9 +81,9 @@ Reg_File RF(
 		  .rst_i(rst_i) ,     
         .RSaddr_i(instr[25:21]) ,  
         .RTaddr_i(instr[20:16]) ,  
-        .RDaddr_i(Mux1_data) ,  
-        .RDdata_i(RegWriteData)  , 
-        .RegWrite_i (RegWrite),
+        .RDaddr_i(Mux3_data) ,  
+        .RDdata_i(RegWriteData1)  , 
+        .RegWrite_i (RegWrite1),
         .RSdata_o(RSdata) ,  
         .RTdata_o(RTdata)   
         );
@@ -120,7 +123,7 @@ ALU ALU(
        .src1_i(RSdata),
 	    .src2_i(Mux2_data),
 	    .ctrl_i(ALUCtrl),
-	    .result_o(RDdata),
+	    .result_o(ALU_result),
 		.zero_o(Zero),
 		.shift_i(instr[10:6])
 	    );
@@ -148,15 +151,15 @@ MUX_2to1 #(.size(32)) Mux_PC_Source(
         
 Data_Memory Data_Memory(
         .clk_i(clk_i),
-        .addr_i(RDdata),
-        .data_i(RSdata),
+        .addr_i(ALU_result),
+        .data_i(RTdata),
         .MemRead_i(MemRead),
         .MemWrite_i(MemWrite),
         .data_o(MemData)
         );
 
 MUX_2to1 #(.size(32)) Memto_Reg_source(
-			.data0_i(RDdata),
+			.data0_i(ALU_result),
 			.data1_i(MemData),
 			.select_i(Memto_Reg),
 			.data_o(RegWriteData)
@@ -174,17 +177,37 @@ MUX_2to1 #(.size(32)) Jump_or_otherPC(
 			.select_i(jump),
 			.data_o(pc_in)
 			);
-			
+			// handling jr & nop Regwrite might be error
+MUX_2to1 #(.size(1)) Mux_Reg_Write(
+			.data0_i(RegWrite),
+			.data1_i(1'b0),
+			.select_i((instr[31:26]==6'b0 & instr[5:0]==6'b001000) | (instr[31:0]==32'b0)),
+			.data_o(RegWrite1)
+			);
+			// Mux for knowing if jal
+MUX_2to1 #(.size(32)) Mux_Write_Data(
+			.data0_i(RegWriteData),
+			.data1_i(Add1_sum),
+			.select_i(instr[31:26]==6'b000011),
+			.data_o(RegWriteData1)
+			);
+MUX_2to1 #(.size(32)) Mux_Write_Des(
+			.data0_i(Mux1_data), //RDaddr
+			.data1_i(5'b11111),
+			.select_i(instr[31:26]==6'b000011),
+			.data_o(Mux3_data)
+			);
 /*always @(clk_i) begin
-    $display("%b ==> %d <=> %d ",RegWrite,Mux1_data,RDdata);
+    $display("%b ==> %d <=> %d ",RegWrite,Mux1_data,ALU_result);
 end*/
 
 always @(clk_i) begin
-	$display("RegWriteData is %d", RegWriteData);
+	$display("RegWriteData is %d, RegWriteData1 is %d", RegWriteData, RegWriteData1);
 end
 
 always @(clk_i) begin
-	$display("RDdata is %d", RDdata);
+	$display("RSaddr is %d ,RTaddr is %d", instr[25:21],instr[20:16]);
+	$display("ALU_result is %d ,RTdata is %d", ALU_result,RTdata);
 end
 
 endmodule

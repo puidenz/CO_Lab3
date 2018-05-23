@@ -81,12 +81,13 @@ assign  memory[31] = {Mem[127], Mem[126], Mem[125], Mem[124]};
 initial begin
 	for(i=0; i<128; i=i+1)
 		Mem[i] = 8'b0;
-	Mem[4] = 8'b00000001;
+	//Mem[4] = 8'b00000001;
 	//Mem[116] = 8'b10000000;
 end 
 
 always@(posedge clk_i) begin
     if(MemWrite_i) begin
+		$display("addr = %d, data = %d",addr_i,data_i);		
 		Mem[addr_i+3] <= data_i[31:24];
 		Mem[addr_i+2] <= data_i[23:16];
 		Mem[addr_i+1] <= data_i[15:8];
@@ -95,8 +96,10 @@ always@(posedge clk_i) begin
 end
 
 always@(addr_i or MemRead_i) begin
-	if(MemRead_i)
+	if(MemRead_i) begin
+		$display("addr = %d, data = %d",addr_i,data_i);		
 		data_o = {Mem[addr_i+3], Mem[addr_i+2], Mem[addr_i+1], Mem[addr_i]};
+	end
 end
 
 endmodule
