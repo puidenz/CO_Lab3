@@ -34,9 +34,9 @@ reg					 jr_o;
 always @(*) begin
     jr_o <= 1'b0;
     case(ALUOp_i)
-        3'b000: ALUCtrl_o <= 4'b0010;
+        3'b000: ALUCtrl_o <= 4'b0010;   //i-type add
         3'b001: ALUCtrl_o <= 4'b0110;	//set less than without function
-        3'b010:
+        3'b010:     //r-type
             begin
                 case(funct_i)
                     6'b100001: ALUCtrl_o <= 4'b0010;
